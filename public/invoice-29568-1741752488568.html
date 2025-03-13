@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+  <html dir="rtl" lang="he">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>חשבונית/קבלה 29568</title>
+      <style>
+          @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700&display=swap');
+          
+          body {
+              font-family: 'Rubik', Arial, sans-serif;
+              margin: 0;
+              padding: 0;
+              direction: rtl;
+              box-sizing: border-box;
+              background-color: #f9f9f9;
+          }
+          
+          .invoice-container {
+              max-width: 800px;
+              margin: 20px auto;
+              padding: 40px;
+              background-color: white;
+              box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          }
+          
+          .header {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 20px;
+          }
+          
+          .logo-placeholder {
+              width: 150px;
+              height: 60px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: bold;
+              color: #777;
+              font-size: 14px;
+          }
+          
+          .title {
+              font-size: 28px;
+              font-weight: bold;
+              text-align: center;
+              margin-top: 10px;
+              margin-bottom: 20px;
+          }
+          
+          .contact-info {
+              display: flex;
+              justify-content: space-between;
+              font-size: 14px;
+              color: #555;
+              margin-bottom: 20px;
+          }
+          
+          .divider {
+              height: 1px;
+              background-color: #ddd;
+              margin: 20px 0;
+          }
+          
+          .invoice-header {
+              display: flex;
+              justify-content: space-between;
+              font-size: 16px;
+              margin-bottom: 20px;
+          }
+          
+          .invoice-header .invoice-number {
+              font-size: 18px;
+              font-weight: bold;
+              color: #2a5885;
+          }
+          
+          .customer-info {
+              margin-top: 30px;
+              margin-bottom: 30px;
+          }
+          
+          .customer-info h3 {
+              margin-bottom: 5px;
+              font-weight: normal;
+          }
+          
+          .customer-name {
+              font-size: 18px;
+              font-weight: bold;
+          }
+          
+          table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-bottom: 30px;
+          }
+          
+          th {
+              text-align: right;
+              padding: 10px 5px;
+              border-bottom: 1px solid #ddd;
+              font-weight: bold;
+          }
+          
+          td {
+              padding: 15px 5px;
+              border-bottom: 1px solid #ddd;
+          }
+          
+          .amount-column {
+              text-align: left;
+          }
+          
+          .total-row td {
+              font-size: 18px;
+              font-weight: bold;
+              padding-top: 20px;
+          }
+          
+          .payment-methods {
+              margin-top: 30px;
+          }
+          
+          .payment-methods h3 {
+              margin-bottom: 10px;
+              font-weight: bold;
+              border-bottom: 1px solid #ddd;
+              padding-bottom: 8px;
+          }
+          
+          .payment-method-row {
+              display: flex;
+              justify-content: space-between;
+              padding: 8px 0;
+              border-bottom: 1px solid #ddd;
+          }
+          
+          .digital-signature {
+              color: #2a5885;
+              margin-top: 5px;
+              font-size: 12px;
+          }
+          
+          /* כפתור הדפסה */
+          .print-button {
+              display: block;
+              margin: 20px auto;
+              padding: 10px 20px;
+              background-color: #2a5885;
+              color: white;
+              border: none;
+              border-radius: 4px;
+              font-family: 'Rubik', Arial, sans-serif;
+              font-size: 16px;
+              cursor: pointer;
+          }
+          
+          .print-button:hover {
+              background-color: #1e3f60;
+          }
+          
+          /* עיצוב ההדפסה */
+          @media print {
+              body {
+                  background-color: white;
+              }
+              
+              .invoice-container {
+                  box-shadow: none;
+                  padding: 0;
+                  margin: 0;
+              }
+              
+              .print-button {
+                  display: none;
+              }
+          }
+      </style>
+  </head>
+  <body>
+      <div class="invoice-container">
+          <div class="header">
+              <div class="logo-placeholder">SHIRA LIBERMAN</div>
+              <h1 class="title">Shira Liberman social media</h1>
+          </div>
+          
+          <div class="contact-info">
+              <div>shira.socialmedia55@gmail.com</div>
+              <div>עוסק פטור: 212535025</div>
+              <div>צבעוני 5/24 אשדוד</div>
+              <div>0534779823</div>
+          </div>
+          
+          <div class="divider"></div>
+          
+          <div class="invoice-header">
+              <div class="invoice-number">חשבון/קבלה 29568</div>
+              <div class="date">12.3.2025</div>
+          </div>
+          
+          <div class="divider"></div>
+          
+          <div class="customer-info">
+              <h3>לכבוד:</h3>
+              <div class="customer-name">לקוח</div>
+          </div>
+          
+          <table>
+              <thead>
+                  <tr>
+                      <th>מוצר/שירות</th>
+                      <th class="amount-column">סה"כ</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>שירותים מקצועיים</td>
+                      <td class="amount-column">0 ₪</td>
+                  </tr>
+                  <tr class="total-row">
+                      <td>סה"כ</td>
+                      <td class="amount-column">0 ₪</td>
+                  </tr>
+              </tbody>
+          </table>
+          
+          <div class="payment-methods">
+              <h3>אמצעי תשלום</h3>
+              <div class="payment-method-row">
+                  <div>כללי</div>
+                  <div>0 ₪</div>
+              </div>
+          </div>
+          
+          <div class="digital-signature">
+              <p>חשבונית דיגיטלית</p>
+          </div>
+      </div>
+      
+      <button class="print-button" onclick="window.print()">הדפס חשבונית</button>
+  </body>
+  </html>

@@ -4,19 +4,12 @@ const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
-/**
- * יוצר קובץ HTML של קבלה בפורמט SUMIT
- * @param {{ referenceNumber, issueDate, customerName, customerIdNumber, serviceDescription, amount, paymentMethod }} invoiceData
- * @param {{ businessName, taxId, email, phone, address, logoUrl }} businessData
- * @returns {string} שם הקובץ
- */
 function generateInvoiceHTML(invoiceData, businessData) {
   const uniqueId = uuidv4().slice(0, 6);
   const filename = `invoice-${invoiceData.referenceNumber}-${uniqueId}.html`;
   const outputDir = path.join(__dirname, '../public/invoices');
   const filepath = path.join(outputDir, filename);
 
-  // ודא שהתיקייה קיימת
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
   }
@@ -26,39 +19,62 @@ function generateInvoiceHTML(invoiceData, businessData) {
 <head>
   <meta charset="UTF-8">
   <title>חשבונית/קבלה ${invoiceData.referenceNumber}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Assistant', sans-serif;
       direction: rtl;
+      background: #f7f8fa;
+      color: #333;
+      padding: 40px;
       max-width: 800px;
       margin: 40px auto;
-      padding: 40px;
-      background: #fff;
-      color: #000;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     }
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid #000;
+      border-bottom: 2px solid #ccc;
       padding-bottom: 10px;
       margin-bottom: 30px;
     }
     header img {
-      height: 70px;
+      height: 60px;
+      object-fit: contain;
     }
     .business-info {
       text-align: right;
-    }
-    .line {
-      border-top: 2px solid #000;
-      margin: 20px 0;
+      font-size: 14px;
+      line-height: 1.6;
     }
     .section {
       margin-bottom: 20px;
     }
-    .bold { font-weight: bold; }
-    .amount { font-size: 1.2em; }
+    .section-title {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 5px;
+    }
+    .value {
+      margin-bottom: 4px;
+    }
+    .amount {
+      font-size: 20px;
+      font-weight: bold;
+      color: #2e7d32;
+      margin-top: 10px;
+    }
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 12px;
+      color: #777;
+    }
   </style>
 </head>
 <body>
@@ -74,22 +90,21 @@ function generateInvoiceHTML(invoiceData, businessData) {
 </header>
 
 <div class="section">
-  <div class="bold">לכבוד:</div>
-  <div>${invoiceData.customerName}</div>
-  <div>מספר מזהה: ${invoiceData.customerIdNumber || ''}</div>
+  <div class="section-title">פרטי לקוח</div>
+  <div class="value">שם: ${invoiceData.customerName}</div>
+  <div class="value">מספר מזהה: ${invoiceData.customerIdNumber || ''}</div>
 </div>
 
 <div class="section">
-  <div>תאריך: ${invoiceData.issueDate}</div>
-  <div>מספר קבלה: ${invoiceData.referenceNumber}</div>
-  <div class="line"></div>
-  <div>תיאור השירות: ${invoiceData.serviceDescription}</div>
-  <div class="amount">סכום: ₪${invoiceData.amount}</div>
-  <div>אמצעי תשלום: ${invoiceData.paymentMethod}</div>
+  <div class="section-title">פרטי חשבונית</div>
+  <div class="value">תאריך: ${invoiceData.issueDate}</div>
+  <div class="value">מספר קבלה: ${invoiceData.referenceNumber}</div>
+  <div class="value">תיאור השירות: ${invoiceData.serviceDescription}</div>
+  <div class="value">אמצעי תשלום: ${invoiceData.paymentMethod}</div>
+  <div class="amount">סה"כ לתשלום: ₪${invoiceData.amount}</div>
 </div>
 
-<div class="line"></div>
-<div>חתום דיגיטלית</div>
+<div class="footer">חתום דיגיטלית | הקבלה הופקה אוטומטית ע"י מערכת Invoice Bot</div>
 
 </body>
 </html>`;

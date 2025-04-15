@@ -38,32 +38,38 @@ app.post('/api/generate-invoice', async (req, res) => {
     const invoiceData = req.body;
 
     if (!invoiceData) {
-      return res.status(400).json({ error: 'חסרים נתונים ליצירת החשבונית' });
+      return res.status(400).json({ error: 'Missing invoice data' });
     }
 
-    // יצירת הנתונים הבסיסיים לחשבונית אם לא סופקו
+    // Build invoice fields with defaults
     const data = {
-      מספר_אסמכתה: invoiceData.referenceNumber || Math.floor(Math.random() * 90000) + 10000,
-      תאריך: invoiceData.valueDate || new Date().toLocaleDateString('he-IL'),
-      סכום: invoiceData.amount || 1200,
-      שם_לקוח: invoiceData.customerName || 'רבקה ביטון',
-      תיאור_שירות: invoiceData.serviceDescription || 'חבילה מותאמת ניהול סושיאל'
+      referenceNumber: invoiceData.referenceNumber || Math.floor(Math.random() * 90000) + 10000,
+      date: invoiceData.valueDate || new Date().toLocaleDateString('en-IL'),
+      amount: invoiceData.amount || 1200,
+      customerName: invoiceData.customerName || 'Default Customer',
+      serviceDescription: invoiceData.serviceDescription || 'Professional services'
     };
 
-    // יצירת קובץ HTML
+    // Generate HTML invoice
     const htmlFilename = generateInvoiceHTML(data);
 
-    // החזרת תשובה עם ה-JSON וקישור ל-HTML
+    // Add the URL into the invoice object
+    data.htmlUrl = `/${htmlFilename}`;
+
+    // Respond
     res.json({
       success: true,
-      invoiceData: data,
-      htmlUrl: `/${htmlFilename}`
+      invoiceData: data
     });
   } catch (error) {
-    console.error('שגיאה ביצירת חשבונית:', error);
-    res.status(500).json({ error: 'שגיאה ביצירת חשבונית', details: error.message });
+    console.error('Error generating invoice:', error);
+    res.status(500).json({
+      error: 'Error generating invoice',
+      details: error.message
+    });
   }
 });
+
 
 // פונקציה ליצירת חשבונית HTML
 function generateInvoiceHTML(extractedData) {

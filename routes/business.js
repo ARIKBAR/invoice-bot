@@ -1,0 +1,66 @@
+const express = require('express');
+const router = express.Router();
+const BusinessProfile = require('../models/BusinessProfile');
+
+/**
+ * @route   POST /api/business-profile
+ * @desc    צור או עדכן פרופיל עסקי לפי מזהה משתמש
+ */
+router.post('/', async (req, res) => {
+  try {
+    const {
+      ownerId,
+      businessName,
+      taxId,
+      email,
+      phone,
+      address,
+      logoUrl
+    } = req.body;
+
+    if (!ownerId || !businessName) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const profile = await BusinessProfile.findOneAndUpdate(
+      { ownerId },
+      {
+        businessName,
+        taxId,
+        email,
+        phone,
+        address,
+        logoUrl
+      },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+
+    res.json({ success: true, profile });
+  } catch (err) {
+    console.error('Error creating business profile:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+/**
+ * @route   GET /api/business-profile/:ownerId
+ * @desc    קבלת פרטי עסק לפי מזהה משתמש
+ */
+router.get('/:ownerId', async (req, res) => {
+    try {
+      const ownerId = req.params.ownerId;
+  
+      const profile = await BusinessProfile.findOne({ ownerId });
+  
+      if (!profile) {
+        return res.status(404).json({ error: 'Business profile not found' });
+      }
+  
+      res.json({ success: true, profile });
+    } catch (err) {
+      console.error('Error fetching business profile:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
+
+module.exports = router;

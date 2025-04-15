@@ -547,5 +547,58 @@ router.put('/:id', async (req, res) => {
       res.status(500).json({ error: 'שגיאת שרת', details: err.message });
     }
   });
+
+  const BusinessProfile = require('../models/BusinessProfile');
+const generateQuickInvoiceHTML = require('../utils/generateInvoiceHTML.js'); // ניצור אותו תכף
+
+/**
+ * @route   POST /api/invoices/generate-quick
+ * @desc    יצירת חשבונית מהירה על בסיס פרופיל עסק ופרטי לקוח
+ */
+router.post('/generate-quick', async (req, res) => {
+  try {
+    const {
+      ownerId,
+      customerName,
+      customerIdNumber,
+      serviceDescription,
+      amount,
+      paymentMethod,
+      issueDate
+    } = req.body;
+
+    if (!ownerId) {
+      return res.status(400).json({ error: 'ownerId is required' });
+    }
+
+    const business = await BusinessProfile.findOne({ ownerId });
+
+    if (!business) {
+      return res.status(404).json({ error: 'Business profile not found' });
+    }
+
+    const invoiceData = {
+      customerName: customerName || 'לקוח כללי',
+      customerIdNumber: customerIdNumber || '',
+      serviceDescription: serviceDescription || 'שירות כללי',
+      amount: amount || '0',
+      paymentMethod: paymentMethod || 'כללי',
+      issueDate: issueDate || new Date().toLocaleDateString('he-IL'),
+      referenceNumber: Math.floor(Math.random() * 90000) + 10000
+    };
+
+    const htmlFilename = generateQuickInvoiceHTML(invoiceData, business);
+    invoiceData.htmlUrl = `/invoices/${htmlFilename}`;
+
+    res.json({
+      success: true,
+      invoiceData
+    });
+  } catch (err) {
+    console.error('Error generating quick invoice:', err);
+    res.status(500).json({ error: 'Server error', details: err.message });
+  }
+});
+
   
   module.exports = router;

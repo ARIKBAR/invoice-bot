@@ -12,14 +12,14 @@
           "name": "Get All Customers",
           "request": {
             "method": "GET",
-            "url": "http://localhost:5000//api/customers"
+            "url": "http://localhost:5000/api/customers"
           }
         },
         {
           "name": "Get Customer by ID",
           "request": {
             "method": "GET",
-            "url": "http://localhost:5000//api/customers/:id",
+            "url": "http://localhost:5000/api/customers/:id",
             "description": "Replace :id with the customer ID."
           }
         },
@@ -27,7 +27,7 @@
           "name": "Create Customer",
           "request": {
             "method": "POST",
-            "url": "http://localhost:5000//api/customers",
+            "url": "http://localhost:5000/api/customers",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"123456789\",\n  \"address\": \"123 Main St\",\n  \"taxId\": \"123456789\",\n  \"notes\": \"VIP customer\"\n}"
@@ -38,7 +38,7 @@
           "name": "Update Customer",
           "request": {
             "method": "PUT",
-            "url": "http://localhost:5000//api/customers/:id",
+            "url": "http://localhost:5000/api/customers/:id",
             "description": "Replace :id with the customer ID.",
             "body": {
               "mode": "raw",
@@ -50,7 +50,7 @@
           "name": "Delete Customer",
           "request": {
             "method": "DELETE",
-            "url": "http://localhost:5000//api/customers/:id",
+            "url": "http://localhost:5000/api/customers/:id",
             "description": "Replace :id with the customer ID."
           }
         }
@@ -63,14 +63,14 @@
           "name": "Get All Products",
           "request": {
             "method": "GET",
-            "url": "http://localhost:5000//api/products"
+            "url": "http://localhost:5000/api/products"
           }
         },
         {
           "name": "Get Product by ID",
           "request": {
             "method": "GET",
-            "url": "http://localhost:5000//api/products/:id",
+            "url": "http://localhost:5000/api/products/:id",
             "description": "Replace :id with the product ID."
           }
         },
@@ -78,7 +78,7 @@
           "name": "Create Product",
           "request": {
             "method": "POST",
-            "url": "http://localhost:5000//api/products",
+            "url": "http://localhost:5000/api/products",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Product A\",\n  \"description\": \"Description of Product A\",\n  \"price\": 100,\n  \"unit\": \"piece\",\n  \"isActive\": true\n}"
@@ -89,7 +89,7 @@
           "name": "Update Product",
           "request": {
             "method": "PUT",
-            "url": "http://localhost:5000//api/products/:id",
+            "url": "http://localhost:5000/api/products/:id",
             "description": "Replace :id with the product ID.",
             "body": {
               "mode": "raw",
@@ -101,7 +101,7 @@
           "name": "Delete Product",
           "request": {
             "method": "DELETE",
-            "url": "http://localhost:5000//api/products/:id",
+            "url": "http://localhost:5000/api/products/:id",
             "description": "Replace :id with the product ID."
           }
         }
@@ -114,14 +114,14 @@
           "name": "Get All Invoices",
           "request": {
             "method": "GET",
-            "url": "http://localhost:5000//api/invoices"
+            "url": "http://localhost:5000/api/invoices"
           }
         },
         {
           "name": "Get Invoice by ID",
           "request": {
             "method": "GET",
-            "url": "http://localhost:5000//api/invoices/:id",
+            "url": "http://localhost:5000/api/invoices/:id",
             "description": "Replace :id with the invoice ID."
           }
         },
@@ -129,7 +129,7 @@
           "name": "Create Invoice",
           "request": {
             "method": "POST",
-            "url": "http://localhost:5000//api/invoices",
+            "url": "http://localhost:5000/api/invoices",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"customer\": \"customer_id\",\n  \"items\": [\n    {\n      \"description\": \"Service A\",\n      \"quantity\": 2,\n      \"unitPrice\": 50\n    }\n  ],\n  \"status\": \"draft\",\n  \"notes\": \"This is a test invoice.\"\n}"
@@ -140,7 +140,7 @@
           "name": "Update Invoice",
           "request": {
             "method": "PUT",
-            "url": "http://localhost:5000//api/invoices/:id",
+            "url": "http://localhost:5000/api/invoices/:id",
             "description": "Replace :id with the invoice ID.",
             "body": {
               "mode": "raw",
@@ -152,7 +152,7 @@
           "name": "Delete Invoice",
           "request": {
             "method": "DELETE",
-            "url": "http://localhost:5000//api/invoices/:id",
+            "url": "http://localhost:5000/api/invoices/:id",
             "description": "Replace :id with the invoice ID."
           }
         }
@@ -165,21 +165,21 @@
           "name": "Get All Templates",
           "request": {
             "method": "GET",
-            "url": "http://localhost:5000//api/templates"
+            "url": "http://localhost:5000/api/templates"
           }
         },
         {
           "name": "Get Default Template",
           "request": {
             "method": "GET",
-            "url": "http://localhost:5000//api/templates/default"
+            "url": "http://localhost:5000/api/templates/default"
           }
         },
         {
           "name": "Create Template",
           "request": {
             "method": "POST",
-            "url": "http://localhost:5000//api/templates",
+            "url": "http://localhost:5000/api/templates",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Template A\",\n  \"htmlTemplate\": \"<html><body>Template Content</body></html>\",\n  \"cssStyle\": \"body { font-family: Arial; }\",\n  \"isDefault\": true\n}"
@@ -190,7 +190,7 @@
           "name": "Update Template",
           "request": {
             "method": "PUT",
-            "url": "http://localhost:5000//api/templates/:id",
+            "url": "http://localhost:5000/api/templates/:id",
             "description": "Replace :id with the template ID.",
             "body": {
               "mode": "raw",
@@ -202,7 +202,7 @@
           "name": "Delete Template",
           "request": {
             "method": "DELETE",
-            "url": "http://localhost:5000//api/templates/:id",
+            "url": "http://localhost:5000/api/templates/:id",
             "description": "Replace :id with the template ID."
           }
         }
@@ -215,35 +215,35 @@
           "name": "Dashboard Stats",
           "request": {
             "method": "GET",
-            "url": "http://localhost:5000//api/stats/dashboard"
+            "url": "http://localhost:5000/api/stats/dashboard"
           }
         },
         {
           "name": "Monthly Income",
           "request": {
             "method": "GET",
-            "url": "http://localhost:5000//api/stats/monthly-income"
+            "url": "http://localhost:5000/api/stats/monthly-income"
           }
         },
         {
           "name": "Top Customers",
           "request": {
             "method": "GET",
-            "url": "http://localhost:5000//api/stats/top-customers?limit=5&timeFrame=year"
+            "url": "http://localhost:5000/api/stats/top-customers?limit=5&timeFrame=year"
           }
         },
         {
           "name": "Unpaid Invoices",
           "request": {
             "method": "GET",
-            "url": "http://localhost:5000//api/stats/unpaid-invoices"
+            "url": "http://localhost:5000/api/stats/unpaid-invoices"
           }
         },
         {
           "name": "Income by Month",
           "request": {
             "method": "GET",
-            "url": "http://localhost:5000//api/stats/income-by-month/:year",
+            "url": "http://localhost:5000/api/stats/income-by-month/:year",
             "description": "Replace :year with the desired year."
           }
         }
@@ -256,7 +256,7 @@
           "name": "Scan Image",
           "request": {
             "method": "POST",
-            "url": "http://localhost:5000//api/scan-image",
+            "url": "http://localhost:5000/api/scan-image",
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -270,6 +270,17 @@
           }
         }
       ]
+    },
+    {
+      "name": "Generate Invoice",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:5000/api/generate-invoice",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"referenceNumber\": \"12345\",\n  \"valueDate\": \"2023-10-01\",\n  \"amount\": 1500,\n  \"customerName\": \"דוד לוי\",\n  \"serviceDescription\": \"שירותי ייעוץ עסקי\"\n}"
+        }
+      }
     }
   ]
 }

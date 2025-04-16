@@ -1,4 +1,4 @@
-// utils/generateInvoiceHTML.js
+// utils/generateInvoiceHTML.js - גרסה עם אייקונים מודרניים + סגנון תואם SUMIT
 
 const fs = require('fs');
 const path = require('path');
@@ -18,94 +18,138 @@ function generateInvoiceHTML(invoiceData, businessData) {
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>חשבונית/קבלה ${invoiceData.referenceNumber}</title>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
   <style>
+    * { box-sizing: border-box; }
     body {
       font-family: 'Assistant', sans-serif;
-      direction: rtl;
-      background: #f7f8fa;
-      color: #333;
+      background: #fff;
+      color: #111;
+      margin: 0;
       padding: 40px;
       max-width: 800px;
-      margin: 40px auto;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      margin: auto;
+      border: 1px solid #eee;
     }
-    header {
+    .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid #ccc;
-      padding-bottom: 10px;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
     }
-    header img {
+    .header .info {
+      text-align: right;
+    }
+    .header img {
       height: 60px;
+      max-width: 120px;
       object-fit: contain;
     }
-    .business-info {
-      text-align: right;
+    .contact-line {
       font-size: 14px;
-      line-height: 1.6;
+      color: #444;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
     }
-    .section {
-      margin-bottom: 20px;
-    }
-    .section-title {
-      font-weight: bold;
+    .contact-line .material-icons-outlined {
       font-size: 16px;
-      margin-bottom: 10px;
-      border-bottom: 1px solid #ddd;
+      margin-left: 6px;
+      color: #666;
+    }
+    .invoice-title {
+      text-align: right;
+      font-size: 24px;
+      font-weight: bold;
+      margin-top: 20px;
+      border-bottom: 1px solid #ccc;
       padding-bottom: 5px;
     }
-    .value {
-      margin-bottom: 4px;
+    .meta-line {
+      font-size: 14px;
+      color: #444;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 6px;
+    }
+    .section {
+      margin-top: 30px;
+    }
+    .section h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+    .line {
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+    .details-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
     }
     .amount {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: bold;
-      color: #2e7d32;
-      margin-top: 10px;
+      color: #039be5;
+      white-space: nowrap;
     }
     .footer {
-      margin-top: 40px;
       text-align: center;
-      font-size: 12px;
-      color: #777;
+      font-size: 11px;
+      color: #888;
+      margin-top: 50px;
     }
   </style>
 </head>
 <body>
-
-<header>
-  <div class="business-info">
-    <div class="bold">${businessData.businessName}</div>
-    <div>עוסק פטור: ${businessData.taxId}</div>
-    <div>${businessData.address}</div>
-    <div>${businessData.phone} | ${businessData.email}</div>
+  <div class="header">
+    <div class="info">
+      <div class="bold" style="font-size: 20px; font-weight: bold;">${businessData.businessName}</div>
+      <div class="contact-line"><span class="material-icons-outlined">email</span>${businessData.email}</div>
+      <div class="contact-line"><span class="material-icons-outlined">location_on</span>${businessData.address}</div>
+      <div class="contact-line"><span class="material-icons-outlined">phone</span>${businessData.phone}</div>
+      <div class="contact-line"><span class="material-icons-outlined">badge</span>עוסק פטור: ${businessData.taxId}</div>
+    </div>
+    <img src="${businessData.logoUrl}" alt="Logo">
   </div>
-  <img src="${businessData.logoUrl}" alt="Logo">
-</header>
 
-<div class="section">
-  <div class="section-title">פרטי לקוח</div>
-  <div class="value">שם: ${invoiceData.customerName}</div>
-  <div class="value">מספר מזהה: ${invoiceData.customerIdNumber || ''}</div>
-</div>
+  <div class="invoice-title">חשבונית/קבלה מס' ${invoiceData.referenceNumber}</div>
+  <div class="meta-line">
+    <div>תאריך: ${invoiceData.issueDate}</div>
+    <div>חתום דיגיטלית</div>
+  </div>
 
-<div class="section">
-  <div class="section-title">פרטי חשבונית</div>
-  <div class="value">תאריך: ${invoiceData.issueDate}</div>
-  <div class="value">מספר קבלה: ${invoiceData.referenceNumber}</div>
-  <div class="value">תיאור השירות: ${invoiceData.serviceDescription}</div>
-  <div class="value">אמצעי תשלום: ${invoiceData.paymentMethod}</div>
-  <div class="amount">סה"כ לתשלום: ₪${invoiceData.amount}</div>
-</div>
+  <div class="section">
+    <h3>לכבוד</h3>
+    <div class="line">${invoiceData.customerName}</div>
+    ${invoiceData.customerIdNumber ? `<div class="line">מספר מזהה: ${invoiceData.customerIdNumber}</div>` : ''}
+  </div>
 
-<div class="footer">חתום דיגיטלית | הקבלה הופקה אוטומטית ע"י מערכת Invoice Bot</div>
+  <div class="section">
+    <h3>פרטי השירות</h3>
+    <div class="details-row">
+      <div class="line">${invoiceData.serviceDescription}</div>
+      <div class="amount">₪${invoiceData.amount}</div>
+    </div>
+  </div>
 
+  <div class="section">
+    <h3>אמצעי תשלום</h3>
+    <div class="line">${invoiceData.paymentMethod}</div>
+  </div>
+
+  <div class="footer">
+    מסמך זה הופק באופן אוטומטי על ידי מערכת Invoice Bot
+  </div>
 </body>
 </html>`;
 

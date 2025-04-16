@@ -96,7 +96,8 @@ app.post('/api/generate-invoice', async (req, res) => {
       totalAmount: invoiceData.amount,
       status: 'draft',
       notes: '',
-      ownerId: ownerId
+      ownerId: ownerId,
+      htmlFileName: filename
     });
 
     await newInvoice.save();

@@ -600,5 +600,36 @@ router.post('/generate-quick', async (req, res) => {
   }
 });
 
+
+
+router.post('/api/invoices-by-phone', async (req, res) => {
+  const { phone } = req.body;
+  if (!phone) {
+    return res.status(400).json({ error: 'מספר טלפון נדרש' });
+  }
+
+  try {
+    const customer = await Customer.findOne({ phone });
+    if (!customer) {
+      return res.status(404).json({ error: 'לקוח לא נמצא' });
+    }
+
+    const invoices = await Invoice.find({ customer: customer._id }).sort({ issueDate: -1 });
+
+    const formattedInvoices = invoices.map(inv => ({
+      מספר: inv.invoiceNumber,
+      תאריך: inv.issueDate.toLocaleDateString('he-IL'),
+      סכום: inv.totalAmount.toFixed(2),
+      קישור: `https://invoice-bot-kcz5.onrender.com/api/invoices/${inv._id}/pdf`
+    }));
+
+    res.json({ invoices: formattedInvoices });
+  } catch (error) {
+    console.error('שגיאה בשליפת הקבלות:', error);
+    res.status(500).json({ error: 'שגיאה בשליפת הקבלות' });
+  }
+});
+
+
   
   module.exports = router;

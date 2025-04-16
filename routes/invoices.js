@@ -19,9 +19,36 @@ async function getNextInvoiceNumber() {
     { $inc: { sequenceValue: 1 } },
     { new: true, upsert: true }
   );
-  
   return counter.sequenceValue.toString();
 }
+
+/**
+ * ראוט חדש - שליפת כל הקבלות לפי ownerId (המשתמש המנפיק)
+ */
+router.post('/api/invoices-by-owner', async (req, res) => {
+  const { ownerId } = req.body;
+  if (!ownerId) return res.status(400).json({ error: 'ownerId is required' });
+
+  try {
+    const invoices = await Invoice.find({ ownerId }).sort({ issueDate: -1 });
+    if (!invoices.length) return res.json({ message: 'לא נמצאו קבלות.' });
+
+    const formatted = invoices.map(inv => (
+      `📄 קבלה מס' ${inv.invoiceNumber}\n` +
+      `📅 תאריך: ${new Date(inv.issueDate).toLocaleDateString('he-IL')}\n` +
+      `💰 סכום: ₪${inv.totalAmount.toFixed(2)}\n` +
+      `📎 קובץ PDF:\nhttps://invoice-bot-kcz5.onrender.com/api/invoices/${inv._id}/pdf\n`
+    )).join('\n──────────────\n');
+
+    res.json({ result: formatted });
+  } catch (err) {
+    console.error('שגיאה בשליפת קבלות לפי ownerId:', err);
+    res.status(500).json({ error: 'שגיאה בשרת', details: err.message });
+  }
+});
+
+// ... כל שאר הראוטים הקיימים נשארים בדיוק כפי שהם ...
+
 
 /**
  * @route   GET /api/invoices
@@ -602,33 +629,7 @@ router.post('/generate-quick', async (req, res) => {
 
 
 
-router.post('/api/invoices-by-phone', async (req, res) => {
-  const { phone } = req.body;
-  if (!phone) {
-    return res.status(400).json({ error: 'מספר טלפון נדרש' });
-  }
 
-  try {
-    const customer = await Customer.findOne({ phone });
-    if (!customer) {
-      return res.status(404).json({ error: 'לקוח לא נמצא' });
-    }
-
-    const invoices = await Invoice.find({ customer: customer._id }).sort({ issueDate: -1 });
-
-    const formattedInvoices = invoices.map(inv => ({
-      מספר: inv.invoiceNumber,
-      תאריך: inv.issueDate.toLocaleDateString('he-IL'),
-      סכום: inv.totalAmount.toFixed(2),
-      קישור: `https://invoice-bot-kcz5.onrender.com/api/invoices/${inv._id}/pdf`
-    }));
-
-    res.json({ invoices: formattedInvoices });
-  } catch (error) {
-    console.error('שגיאה בשליפת הקבלות:', error);
-    res.status(500).json({ error: 'שגיאה בשליפת הקבלות' });
-  }
-});
 
 
   

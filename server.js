@@ -31,6 +31,8 @@ app.use('/api/invoices', require('./routes/invoices'));
 app.use('/api/templates', require('./routes/templates'));
 app.use('/api/stats', require('./routes/stats'));
 app.use('/api/business-profile', require('./routes/business'));
+app.use(require('./routes/invoices-by-owner'));
+
 app.use('/invoices', express.static(path.join(__dirname, 'public/invoices')));
 
 

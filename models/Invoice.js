@@ -45,6 +45,9 @@ const InvoiceSchema = new mongoose.Schema({
     type: String,
     required: false // אופציונלי אם תרצה
   },
+  htmlFileName: {
+    type: String
+  },
   
   issueDate: {
     type: Date,

@@ -37,6 +37,8 @@ app.use('/api/business-profile', require('./routes/business'));
 app.use(require('./routes/invoices-by-owner'));
 app.use('/api/scan-image', require('./routes/scan-image'));
 app.use(require('./routes/view-invoice'));
+app.use(require('./routes/invoice-pdf'));
+
 
 
 // מסלול ליצירת חשבונית מנתונים ידניים

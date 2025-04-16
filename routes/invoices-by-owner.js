@@ -16,7 +16,7 @@ router.post('/api/invoices-by-owner', async (req, res) => {
       `📄 קבלה מס' ${inv.invoiceNumber}\n` +
       `📅 תאריך: ${new Date(inv.issueDate).toLocaleDateString('he-IL')}\n` +
       `💰 סכום: ₪${inv.totalAmount.toFixed(2)}\n` +
-      `📎 לצפייה: https://invoice-bot-kcz5.onrender.com/invoices/${inv.htmlFileName}`
+      `📎 לצפייה: https://invoice-bot-kcz5.onrender.com/invoice/${inv._id}`
     )).join('\n──────────────\n');
 
     res.json({ result: formatted });

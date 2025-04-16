@@ -40,6 +40,12 @@ const InvoiceSchema = new mongoose.Schema({
     ref: 'Customer',
     required: [true, 'לקוח הוא שדה חובה']
   },
+
+  ownerId: {
+    type: String,
+    required: false // אופציונלי אם תרצה
+  },
+  
   issueDate: {
     type: Date,
     default: Date.now

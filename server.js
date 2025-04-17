@@ -38,6 +38,7 @@ app.use(require('./routes/invoices-by-owner'));
 app.use('/api/scan-image', require('./routes/scan-image'));
 app.use(require('./routes/view-invoice'));
 app.use(require('./routes/invoice-pdf'));
+app.use(require('./routes/invoiceRoutes'));
 
 
 

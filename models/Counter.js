@@ -1,17 +1,9 @@
-// models/Counter.js - מודל לניהול מספרי חשבוניות אוטומטיים
-
+// models/Counter.js
 const mongoose = require('mongoose');
 
-const CounterSchema = new mongoose.Schema({
-  type: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  sequenceValue: {
-    type: Number,
-    default: 4000 // מספר התחלתי
-  }
+const counterSchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true },
+  value: { type: Number, default: 4000 } // מתחיל מ-4000
 });
 
-module.exports = mongoose.model('Counter', CounterSchema);
+module.exports = mongoose.model('Counter', counterSchema);

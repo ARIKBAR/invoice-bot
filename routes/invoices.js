@@ -15,11 +15,11 @@ const PDFDocument = require('pdfkit');
  */
 async function getNextInvoiceNumber() {
   const counter = await Counter.findOneAndUpdate(
-    { type: 'invoice' },
-    { $inc: { sequenceValue: 1 } },
+    { name: 'invoiceNumber' },
+    { $inc: { value: 1 } },
     { new: true, upsert: true }
   );
-  return counter.sequenceValue.toString();
+  return counter.value;
 }
 
 /**
@@ -611,7 +611,7 @@ router.post('/generate-quick', async (req, res) => {
       amount: amount || '0',
       paymentMethod: paymentMethod || 'כללי',
       issueDate: issueDate || new Date().toLocaleDateString('he-IL'),
-      referenceNumber: Math.floor(Math.random() * 90000) + 10000
+      referenceNumber: await getNextInvoiceNumber()
     };
 
     const htmlFilename = generateQuickInvoiceHTML(invoiceData, business);

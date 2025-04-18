@@ -9,6 +9,8 @@ const generateInvoiceHTML = require('./utils/generateInvoiceHTML.js');
 const BusinessProfile = require('./models/BusinessProfile');
 const Invoice = require('./models/Invoice');
 const Customer = require('./models/Customer');
+const Counter = require('./models/Counter');
+
 
 require('dotenv').config();
 
@@ -41,6 +43,14 @@ app.use(require('./routes/invoice-pdf'));
 app.use(require('./routes/invoiceRoutes'));
 
 
+async function getNextInvoiceNumber() {
+  const counter = await Counter.findOneAndUpdate(
+    { name: 'invoiceNumber' },
+    { $inc: { value: 1 } },
+    { new: true, upsert: true }
+  );
+  return counter.value;
+}
 
 // מסלול ליצירת חשבונית מנתונים ידניים
 app.post('/api/generate-invoice', async (req, res) => {
@@ -71,7 +81,7 @@ app.post('/api/generate-invoice', async (req, res) => {
       amount: amount || '0',
       paymentMethod: paymentMethod || 'כללי',
       issueDate: valueDate || new Date().toLocaleDateString('he-IL'),
-      referenceNumber: Math.floor(Math.random() * 90000) + 10000
+      referenceNumber: await getNextInvoiceNumber()
     };
 
     const filename = generateInvoiceHTML(invoiceData, business);

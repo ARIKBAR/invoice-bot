@@ -1,4 +1,4 @@
-// routes/invoices-by-owner.js - שליפת קבלות לפי ownerId עם סינון לפי תאריך ושם לקוח
+// routes/invoices-by-owner.js - שליפת קבלות לפי ownerId עם חיפוש לפי תאריך ושם לקוח
 
 const express = require('express');
 const router = express.Router();
@@ -23,15 +23,6 @@ router.post('/api/invoices-by-owner', async (req, res) => {
   try {
     const filter = { ownerId };
 
-    // חיפוש לפי שם לקוח
-    if (search) {
-      filter.$or = [
-        { customerName: { $regex: search, $options: 'i' } },
-        { invoiceNumber: { $regex: search, $options: 'i' } }
-      ];
-    }
-
-    // סינון לפי תאריך לפי מצב
     if (dateMode && dateInput) {
       const baseDate = normalizeDate(dateInput);
       if (baseDate) {
@@ -50,11 +41,30 @@ router.post('/api/invoices-by-owner', async (req, res) => {
       }
     }
 
-    const invoices = await Invoice.find(filter).sort({ issueDate: -1 });
-    if (!invoices.length) return res.json({ message: 'לא נמצאו קבלות.' });
+    const invoices = await Invoice.find(filter)
+      .populate('customer')
+      .sort({ issueDate: -1 });
 
-    const formatted = invoices.map(inv => (
+    let filteredInvoices = invoices;
+
+    if (search) {
+      const lower = search.toLowerCase();
+      filteredInvoices = invoices.filter(inv => {
+        const name = inv.customer?.name || '';
+        return (
+          name.toLowerCase().includes(lower) ||
+          inv.invoiceNumber?.toString().includes(search)
+        );
+      });
+    }
+
+    if (!filteredInvoices.length) {
+      return res.json({ message: 'לא נמצאו קבלות.' });
+    }
+
+    const formatted = filteredInvoices.map(inv => (
       `📄 קבלה מס' ${inv.invoiceNumber}\n` +
+      `👤 לקוח: ${inv.customer?.name || 'ללא שם'}\n` +
       `📅 תאריך: ${new Date(inv.issueDate).toLocaleDateString('he-IL')}\n` +
       `💰 סכום: ₪${inv.totalAmount.toFixed(2)}\n` +
       `📎 לצפייה: https://invoice-bot-kcz5.onrender.com/invoice/${inv._id}`

@@ -124,7 +124,7 @@ router.get('/invoice/:id', async (req, res) => {
 
   <div class="invoice-title">חשבונית/קבלה מס' ${invoice.invoiceNumber}</div>
   <div class="meta-line">
-    <div>תאריך: ${invoice.issueDate}</div>
+<div>תאריך: ${new Date(invoice.issueDate).toLocaleDateString('he-IL')}</div>
     <div>חתום דיגיטלית</div>
   </div>
 
@@ -144,7 +144,7 @@ router.get('/invoice/:id', async (req, res) => {
 
   <div class="section">
     <h3>אמצעי תשלום</h3>
-    <div class="line">${invoice.paymentMethod}</div>
+<div class="line">${invoice.paymentMethod || 'כללי'}</div>
   </div>
 
   <div class="footer">

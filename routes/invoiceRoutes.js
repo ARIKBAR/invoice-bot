@@ -4,7 +4,7 @@ const puppeteer = require('puppeteer');
 const Invoice = require('../models/Invoice');
 const Customer = require('../models/Customer');
 const BusinessProfile = require('../models/BusinessProfile');
-const renderInvoiceHtml = require('../utils/renderInvoiceHtml');
+const generateInvoiceHTML = require('../utils/generateInvoiceHTML');
 
 // צפייה בחשבונית ב-HTML
 router.get('/invoice/:id', async (req, res) => {
@@ -15,7 +15,7 @@ router.get('/invoice/:id', async (req, res) => {
     const business = await BusinessProfile.findOne({ ownerId: invoice.ownerId });
     if (!business) return res.status(404).send('פרטי עסק לא נמצאו');
 
-    const html = renderInvoiceHtml(invoice, business);
+    const html = generateInvoiceHTML(invoice, business);
     res.send(html);
   } catch (err) {
     console.error('שגיאה בצפייה בחשבונית:', err);

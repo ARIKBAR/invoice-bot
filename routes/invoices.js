@@ -578,6 +578,35 @@ router.put('/:id', async (req, res) => {
   const BusinessProfile = require('../models/BusinessProfile');
 const generateQuickInvoiceHTML = require('../utils/generateInvoiceHTML.js'); // ניצור אותו תכף
 
+// routes/invoices.js
+const generateInvoicePdf = require('../utils/generateInvoicePdf');
+
+router.get('/invoice/:id/pdf-screenshot', async (req, res) => {
+  try {
+    const invoiceId = req.params.id;
+    const invoiceUrl = `http://localhost:5000/invoice/${invoiceId}`; // או הדומיין שלך בפרודקשן
+    const filePath = path.join(__dirname, `../temp/invoice-${invoiceId}.pdf`);
+
+    await generateInvoicePdf(invoiceUrl, filePath);
+
+    res.download(filePath, `invoice-${invoiceId}.pdf`, (err) => {
+      if (err) {
+        console.error('שגיאה בשליחת PDF:', err);
+        return res.status(500).json({ error: 'שגיאה בשליחת הקובץ' });
+      }
+
+      // מחיקת הקובץ לאחר השליחה
+      fs.unlink(filePath, (unlinkErr) => {
+        if (unlinkErr) console.error('שגיאה במחיקת PDF זמני:', unlinkErr);
+      });
+    });
+  } catch (err) {
+    console.error('שגיאה ביצירת PDF עם puppeteer:', err);
+    res.status(500).json({ error: 'שגיאה ביצירת PDF', details: err.message });
+  }
+});
+
+
 /**
  * @route   POST /api/invoices/generate-quick
  * @desc    יצירת חשבונית מהירה על בסיס פרופיל עסק ופרטי לקוח

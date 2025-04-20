@@ -150,6 +150,8 @@ router.get('/invoice/:id', async (req, res) => {
   <div class="footer">
     מסמך זה הופק אוטומטית על ידי מערכת Invoice Bot
   </div>
+  <a href="/api/invoices/${invoice._id}/pdf" class="download-btn">הורד כ-PDF</a>
+
 </body>
 </html>
     `);

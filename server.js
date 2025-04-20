@@ -41,6 +41,8 @@ app.use('/api/scan-image', require('./routes/scan-image'));
 app.use(require('./routes/view-invoice'));
 app.use(require('./routes/invoice-pdf'));
 app.use(require('./routes/invoiceRoutes'));
+app.use(require('./routes/invoice-image'));
+
 
 
 async function getNextInvoiceNumber() {

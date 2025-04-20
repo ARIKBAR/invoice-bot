@@ -581,30 +581,30 @@ const generateQuickInvoiceHTML = require('../utils/generateInvoiceHTML.js'); // 
 // routes/invoices.js
 const generateInvoicePdf = require('../utils/generateInvoicePdf');
 
-router.get('/invoice/:id/pdf-screenshot', async (req, res) => {
-  try {
-    const invoiceId = req.params.id;
-    const invoiceUrl = `http://localhost:5000/invoice/${invoiceId}`; // או הדומיין שלך בפרודקשן
-    const filePath = path.join(__dirname, `../temp/invoice-${invoiceId}.pdf`);
+  router.get('/invoice/:id/pdf-screenshot', async (req, res) => {
+    try {
+      const invoiceId = req.params.id;
+      const invoiceUrl = `http://localhost:5000/invoice/${invoiceId}`; // או הדומיין שלך בפרודקשן
+      const filePath = path.join(__dirname, `../temp/invoice-${invoiceId}.pdf`);
 
-    await generateInvoicePdf(invoiceUrl, filePath);
+      await generateInvoicePdf(invoiceUrl, filePath);
 
-    res.download(filePath, `invoice-${invoiceId}.pdf`, (err) => {
-      if (err) {
-        console.error('שגיאה בשליחת PDF:', err);
-        return res.status(500).json({ error: 'שגיאה בשליחת הקובץ' });
-      }
+      res.download(filePath, `invoice-${invoiceId}.pdf`, (err) => {
+        if (err) {
+          console.error('שגיאה בשליחת PDF:', err);
+          return res.status(500).json({ error: 'שגיאה בשליחת הקובץ' });
+        }
 
-      // מחיקת הקובץ לאחר השליחה
-      fs.unlink(filePath, (unlinkErr) => {
-        if (unlinkErr) console.error('שגיאה במחיקת PDF זמני:', unlinkErr);
+        // מחיקת הקובץ לאחר השליחה
+        fs.unlink(filePath, (unlinkErr) => {
+          if (unlinkErr) console.error('שגיאה במחיקת PDF זמני:', unlinkErr);
+        });
       });
-    });
-  } catch (err) {
-    console.error('שגיאה ביצירת PDF עם puppeteer:', err);
-    res.status(500).json({ error: 'שגיאה ביצירת PDF', details: err.message });
-  }
-});
+    } catch (err) {
+      console.error('שגיאה ביצירת PDF עם puppeteer:', err);
+      res.status(500).json({ error: 'שגיאה ביצירת PDF', details: err.message });
+    }
+  });
 
 
 /**

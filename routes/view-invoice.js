@@ -1,10 +1,12 @@
 // routes/view-invoice.js
 
+const axios = require('axios');
 const express = require('express');
 const router = express.Router();
 const Invoice = require('../models/Invoice');
 const Customer = require('../models/Customer');
 const BusinessProfile = require('../models/BusinessProfile');
+const renderInvoiceHtml = require('../utils/renderInvoiceHtml');
 
 router.get('/invoice/:id', async (req, res) => {
   try {
@@ -161,4 +163,76 @@ router.get('/invoice/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+
+router.get('/invoice/:id/image/download', async (req, res) => {
+    try {
+      const invoiceId = req.params.id;
+  
+      // שליפת החשבונית עם לקוח
+      const invoice = await Invoice.findById(invoiceId).populate('customer');
+      if (!invoice) return res.status(404).json({ error: 'חשבונית לא נמצאה' });
+  
+      const business = await BusinessProfile.findOne({ ownerId: invoice.ownerId });
+  
+      // בניית הנתונים להצגת החשבונית
+      const invoiceData = {
+        customerName: invoice.customer?.name || '',
+        customerIdNumber: invoice.customer?.idNumber || '',
+        serviceDescription: invoice.items[0]?.description || '',
+        amount: invoice.totalAmount,
+        paymentMethod: invoice.paymentMethod || 'כללי',
+        issueDate: invoice.issueDate.toLocaleDateString('he-IL'),
+        referenceNumber: invoice.invoiceNumber
+      };
+  
+      const businessData = {
+        businessName: business?.businessName || '',
+        address: business?.address || '',
+        email: business?.email || '',
+        phone: business?.phone || '',
+        taxId: business?.taxId || '',
+        logoUrl: business?.logoUrl || ''
+      };
+  
+      const html = renderInvoiceHtml(invoiceData, businessData);
+  
+      // פרמטרים לבקשת HTML → תמונה
+      const params = new URLSearchParams({
+        html,
+        selector: 'body',
+        transparent: 'true',
+        device_scale: '2',
+        width: '',
+        height: ''
+      });
+  
+      // יצירת תמונה דרך htmlcsstoimage
+      const hctiResponse = await axios.post(
+        'https://hcti.io/v1/image',
+        params,
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          auth: {
+            username: process.env.HTMLCSSTOIMAGE_USER,
+            password: process.env.HTMLCSSTOIMAGE_API_KEY
+          }
+        }
+      );
+  
+      const imageUrl = hctiResponse.data.url;
+  
+      // הורדת התמונה ללקוח
+      const imageResponse = await axios.get(imageUrl, { responseType: 'stream' });
+  
+      res.setHeader('Content-Disposition', `attachment; filename=invoice-${invoice.invoiceNumber}.png`);
+      imageResponse.data.pipe(res);
+  
+    } catch (err) {
+      console.error('שגיאה בהורדת תמונה:', err);
+      res.status(500).json({ error: 'שגיאה בהורדת התמונה', details: err.message });
+    }
+  });
+  
+  module.exports = router;

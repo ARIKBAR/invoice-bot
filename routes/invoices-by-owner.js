@@ -67,10 +67,25 @@ router.post('/api/invoices-by-owner', async (req, res) => {
       `👤 לקוח: ${inv.customer?.name || 'ללא שם'}\n` +
       `📅 תאריך: ${new Date(inv.issueDate).toLocaleDateString('he-IL')}\n` +
       `💰 סכום: ₪${inv.totalAmount.toFixed(2)}\n` +
-      `📎 לצפייה: https://invoice-bot-kcz5.onrender.com/invoice/${inv._id}`
+      `📎 לצפייה: https://invoice-bot-kcz5.onrender.com/invoice/${inv._id}\n` +
+      `⬇️ הורדה: https://invoice-bot-kcz5.onrender.com/invoice/${inv._id}/image/download`
     )).join('\n──────────────\n');
-
-    res.json({ result: formatted });
+    
+    const objectified = filteredInvoices.map(inv => ({
+      id: inv._id,
+      invoiceNumber: inv.invoiceNumber,
+      customerName: inv.customer?.name || '',
+      issueDate: new Date(inv.issueDate).toLocaleDateString('he-IL'),
+      totalAmount: inv.totalAmount,
+      viewUrl: `https://invoice-bot-kcz5.onrender.com/invoice/${inv._id}`,
+      downloadUrl: `https://invoice-bot-kcz5.onrender.com/invoice/${inv._id}/image/download`
+    }));
+    
+    res.json({
+      result: formatted,
+      invoices: objectified
+    });
+    
   } catch (err) {
     console.error('שגיאה בשליפת קבלות לפי ownerId:', err);
     res.status(500).json({ error: 'שגיאה בשרת', details: err.message });

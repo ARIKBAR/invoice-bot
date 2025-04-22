@@ -11,20 +11,33 @@ const Customer = require('../models/Customer');
  */
 router.get('/', async (req, res) => {
   try {
-    const customers = await Customer.find().sort({ name: 1 });
+    const page = parseInt(req.query.page) || 1;
+    const limit = 9; // כמות לקוחות לדף
+    const skip = (page - 1) * limit;
 
-    // מערך שמות בלבד
+    const total = await Customer.countDocuments();
+    const customers = await Customer.find()
+      .sort({ name: 1 })
+      .skip(skip)
+      .limit(limit);
+
     const customerNames = customers.map(c => c.name);
 
     res.json({
-      customers,       // המידע המלא
-      customerNames    // מערך שמות בלבד
+      customers,       // כל הנתונים של הלקוחות בעמוד הנוכחי
+      customerNames,   // רק השמות – עבור תצוגה בבחירה
+      hasMore: skip + limit < total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalResults: total
     });
   } catch (err) {
     console.error('שגיאה בשליפת לקוחות:', err);
     res.status(500).json({ error: 'שגיאה בשרת' });
   }
 });
+
+
 
 router.get('/by-name/:name', async (req, res) => {
   try {

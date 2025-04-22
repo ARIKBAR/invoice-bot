@@ -61,6 +61,7 @@ app.post('/api/generate-invoice', async (req, res) => {
       ownerId,
       customerName,
       customerIdNumber,
+      customerId,
       serviceDescription,
       amount,
       paymentMethod,
@@ -90,14 +91,20 @@ app.post('/api/generate-invoice', async (req, res) => {
     const htmlUrl = `/invoices/${filename}`;
 
     // יצירת או שליפת לקוח
-    let customer = await Customer.findOne({ name: invoiceData.customerName });
-    if (!customer) {
-      customer = new Customer({
-        name: invoiceData.customerName,
-        idNumber: invoiceData.customerIdNumber || '',
-      });
-      await customer.save();
+    let customer;
+    if (customerId) {
+      customer = await Customer.findById(customerId);
+      if (!customer) {
+        return res.status(400).json({ error: 'הלקוח לא נמצא לפי customerId' });
+      }
+    } else {
+      customer = await Customer.findOne({ name: customerName });
+      if (!customer) {
+        customer = new Customer({ name: customerName, idNumber: customerIdNumber || '' });
+        await customer.save();
+      }
     }
+    
 
     // שמירת הקבלה במסד הנתונים
     const newInvoice = new Invoice({

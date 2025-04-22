@@ -114,7 +114,9 @@ app.post('/api/generate-invoice', async (req, res) => {
       status: 'draft',
       notes: '',
       ownerId: ownerId,
-      htmlFileName: filename
+      htmlFileName: filename,
+      downloadUrl: `https://invoice-bot-kcz5.onrender.com/invoice/${newInvoice._id}/image/download` // ✅ כאן הקישור לתמונה
+
     });
 
     await newInvoice.save();

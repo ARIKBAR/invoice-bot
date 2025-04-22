@@ -125,6 +125,7 @@ app.post('/api/generate-invoice', async (req, res) => {
       invoiceData: {
         ...invoiceData,
         htmlUrl,
+        save_as_picture:`https://invoice-bot-kcz5.onrender.com/invoice/${newInvoice._id}/image`,
         downloadUrl: `https://invoice-bot-kcz5.onrender.com/invoice/${newInvoice._id}/image/download` // ✅ כאן הקישור לתמונה
       }
     });

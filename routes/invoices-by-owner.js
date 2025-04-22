@@ -83,7 +83,7 @@ router.post('/api/invoices-by-owner', async (req, res) => {
     
     res.json({
       result: formatted,
-      invoices: objectified
+      // invoices: objectified
     });
     
   } catch (err) {

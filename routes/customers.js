@@ -12,10 +12,29 @@ const Customer = require('../models/Customer');
 router.get('/', async (req, res) => {
   try {
     const customers = await Customer.find().sort({ name: 1 });
-    res.json(customers);
+
+    // מערך שמות בלבד
+    const customerNames = customers.map(c => c.name);
+
+    res.json({
+      customers,       // המידע המלא
+      customerNames    // מערך שמות בלבד
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'שגיאת שרת', details: err.message });
+    console.error('שגיאה בשליפת לקוחות:', err);
+    res.status(500).json({ error: 'שגיאה בשרת' });
+  }
+});
+
+router.get('/by-name/:name', async (req, res) => {
+  try {
+    const customer = await Customer.findOne({ name: req.params.name });
+    if (!customer) return res.status(404).json({ error: 'לקוח לא נמצא' });
+
+    res.json(customer);
+  } catch (err) {
+    console.error('שגיאה בשליפת לקוח לפי שם:', err);
+    res.status(500).json({ error: 'שגיאה בשרת' });
   }
 });
 

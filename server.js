@@ -115,17 +115,17 @@ app.post('/api/generate-invoice', async (req, res) => {
       notes: '',
       ownerId: ownerId,
       htmlFileName: filename,
-      downloadUrl: `https://invoice-bot-kcz5.onrender.com/invoice/${newInvoice._id}/image/download` // ✅ כאן הקישור לתמונה
-
+      
     });
-
+    
     await newInvoice.save();
-
+    
     res.json({
       success: true,
       invoiceData: {
         ...invoiceData,
-        htmlUrl
+        htmlUrl,
+        downloadUrl: `https://invoice-bot-kcz5.onrender.com/invoice/${newInvoice._id}/image/download` // ✅ כאן הקישור לתמונה
       }
     });
   } catch (err) {

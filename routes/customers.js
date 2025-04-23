@@ -109,6 +109,20 @@ router.post('/', async (req, res) => {
   }
 });
 
+// בדיקה אם לקוח עם אותו שם קיים
+router.post('/check-name-exists', async (req, res) => {
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ error: 'שם הלקוח הוא שדה חובה' });
+
+  const existing = await Customer.findOne({ name: name.trim() });
+  if (existing) {
+    return res.json({ exists: true, message: 'כבר קיים לקוח בשם זה' });
+  } else {
+    return res.json({ exists: false });
+  }
+});
+
+
 /**
  * @route   PUT /api/customers/:id
  * @desc    עדכון לקוח קיים

@@ -23,6 +23,9 @@ router.get('/', async (req, res) => {
 
     const customerNames = customers.map(c => c.name);
     const customerNamesComma = customerNames.join(', ');
+    customerNamesComma.push('לקוח לא ברשימה');
+    customerNames.push('לקוח לא ברשימה');
+
 
 
     res.json({

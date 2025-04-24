@@ -21,14 +21,11 @@ router.get('/', async (req, res) => {
       .skip(skip)
       .limit(limit);
 
-    const customerNames = customers.map(c => ({
-      title: c.name,
-      description: c.taxId || ''         // אם אין, מחזירים מחרוזת ריקה
-    }));
+    const customerNames = customers.map(c => c.name);
 
     res.json({
       customers,       // כל הנתונים של הלקוחות בעמוד הנוכחי
-      customerNames,   // מבנה לתפריט דינמי של ChatRace
+      customerNames,   // רק השמות – עבור תצוגה בבחירה
       hasMore: skip + limit < total,
       currentPage: page,
       totalPages: Math.ceil(total / limit),
@@ -39,7 +36,6 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: 'שגיאה בשרת' });
   }
 });
-
 
 
 

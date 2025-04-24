@@ -22,10 +22,13 @@ router.get('/', async (req, res) => {
       .limit(limit);
 
     const customerNames = customers.map(c => c.name);
+    const customerNamesComma = customerNames.join(', ');
+
 
     res.json({
       customers,       // כל הנתונים של הלקוחות בעמוד הנוכחי
       customerNames,   // רק השמות – עבור תצוגה בבחירה
+      customerNamesComma, // שמות הלקוחות בפורמט מופרד בפסיקים
       hasMore: skip + limit < total,
       currentPage: page,
       totalPages: Math.ceil(total / limit),

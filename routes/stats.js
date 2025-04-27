@@ -412,7 +412,7 @@ router.get('/monthly-report/:ownerId/:month/:year', async (req, res) => {
 
     // יצירת קובץ Excel
     const workbook = new ExcelJS.Workbook();
-    const sheet = workbook.addWorksheet(`Report ${month}/${year}`);
+    const sheet = workbook.addWorksheet(`Report ${month}-${year}`);
 
     sheet.columns = [
       { header: 'מספר קבלה', key: 'invoiceNumber', width: 15 },

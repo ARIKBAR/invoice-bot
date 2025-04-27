@@ -36,28 +36,31 @@ router.get('/invoice/:id', async (req, res) => {
       margin: auto;
       border: 1px solid #eee;
     }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .header > .info,
+   .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.header > .info,
 .header > .logo {
   width: 50%;
 }
+
 .header .info {
   text-align: right;
 }
+
 .header .logo {
-  text-align: left;
-}
-.header img {
-  max-width: 100%;
-  height: auto;
+  display: flex;
+  justify-content: flex-end; /* במקום flex-start */
+  align-items: flex-start;
 }
 
- .header img {
+
+.header img {
   width: 120px;
   height: 60px;
   object-fit: contain;
@@ -65,10 +68,22 @@ router.get('/invoice/:id', async (req, res) => {
   display: block;
 }
 
-      .logo {
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
+/* מובייל */
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+  }
+  .header > .info,
+  .header > .logo {
+    width: 100%;
+  }
+    .header img {
+  margin-top: 10px;
+}
+
 }
 
       

@@ -42,14 +42,36 @@ router.get('/invoice/:id', async (req, res) => {
       align-items: center;
       margin-bottom: 10px;
     }
-    .header .info {
-      text-align: right;
-    }
-    .header img {
-      height: 60px;
-      max-width: 120px;
-      object-fit: contain;
-    }
+    .header > .info,
+.header > .logo {
+  width: 50%;
+}
+.header .info {
+  text-align: right;
+}
+.header .logo {
+  text-align: left;
+}
+.header img {
+  max-width: 100%;
+  height: auto;
+}
+
+ .header img {
+  width: 120px;
+  height: 60px;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+      .logo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+      
     .contact-line {
       font-size: 14px;
       color: #444;
@@ -113,16 +135,19 @@ router.get('/invoice/:id', async (req, res) => {
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="info">
-      <div class="bold" style="font-size: 20px; font-weight: bold;">${business.businessName}</div>
-      <div class="contact-line"><span class="material-icons-outlined">email</span>${business.email}</div>
-      <div class="contact-line"><span class="material-icons-outlined">location_on</span>${business.address}</div>
-      <div class="contact-line"><span class="material-icons-outlined">phone</span>${business.phone}</div>
-      <div class="contact-line"><span class="material-icons-outlined">badge</span>עוסק פטור: ${business.taxId}</div>
-    </div>
+ <div class="header">
+  <div class="info">
+    <div class="bold" style="font-size: 20px; font-weight: bold;">${business.businessName}</div>
+    <div class="contact-line"><span class="material-icons-outlined">email</span>${business.email}</div>
+    <div class="contact-line"><span class="material-icons-outlined">location_on</span>${business.address}</div>
+    <div class="contact-line"><span class="material-icons-outlined">phone</span>${business.phone}</div>
+    <div class="contact-line"><span class="material-icons-outlined">badge</span>עוסק פטור: ${business.taxId}</div>
+  </div>
+  <div class="logo">
     <img src="${business.logoUrl}" alt="Logo">
   </div>
+</div>
+
 
   <div class="invoice-title">חשבונית/קבלה מס' ${invoice.invoiceNumber}</div>
   <div class="meta-line">
@@ -152,7 +177,6 @@ router.get('/invoice/:id', async (req, res) => {
   <div class="footer">
     מסמך זה הופק אוטומטית על ידי מערכת Invoice Bot
   </div>
-<a href="/api/invoice/${invoice._id}/pdf-screenshot" class="download-btn">הורד PDF</a>
 
 </body>
 </html>

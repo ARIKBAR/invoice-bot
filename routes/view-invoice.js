@@ -52,7 +52,7 @@ router.get('/invoice/:id', async (req, res) => {
 }
 
 .header .logo {
-  width: 40%;
+  // width: 40%;
   max-width: 40%;
   display: flex;
   justify-content: flex-end;

@@ -3,6 +3,10 @@
 const mongoose = require('mongoose');
 
 const CustomerSchema = new mongoose.Schema({
+  ownerId: {
+    type: String,
+    required: true
+  },  
   name: {
     type: String,
     required: [true, 'שם הלקוח הוא שדה חובה'],

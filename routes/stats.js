@@ -433,15 +433,16 @@ router.get('/monthly-report/:ownerId/:month/:year', async (req, res) => {
     });
 
     // שמירה זמנית
-    const tempDir = path.join(__dirname, '../temp');
-    if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
-    const filePath = path.join(tempDir, `report-${ownerId}-${month}-${year}.xlsx`);
+    const exportDir = path.join(__dirname, 'public/exports');
+    if (!fs.existsSync(exportDir)) fs.mkdirSync(exportDir, { recursive: true });
+    const filePath = path.join(exportDir, `report-${ownerId}-${month}-${year}.xlsx`);
+    
     await workbook.xlsx.writeFile(filePath);
 
     res.json({
       success: true,
       html,
-      excelUrl: `/temp/report-${ownerId}-${month}-${year}.xlsx`,
+      excelUrl: `/exports/report-${ownerId}-${month}-${year}.xlsx`,
       summary: {
         total: totalAmount,
         count: invoices.length

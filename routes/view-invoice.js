@@ -77,7 +77,6 @@ router.get('/invoice/:id', async (req, res) => {
   .header .info,
   .header .logo {
     width: 50%;
-    max-width: 50%;
   }
   .header .logo {
     justify-content: flex-end;

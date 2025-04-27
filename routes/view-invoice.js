@@ -42,23 +42,22 @@ router.get('/invoice/:id', async (req, res) => {
   align-items: flex-start;
   gap: 20px;
   margin-bottom: 10px;
-}
-
-.header > .info,
-.header > .logo {
-  width: 50%;
+  flex-wrap: wrap;
 }
 
 .header .info {
+  width: 60%;
+  max-width: 60%;
   text-align: right;
 }
 
 .header .logo {
+  width: 40%;
+  max-width: 40%;
   display: flex;
-  justify-content: flex-end; /* במקום flex-start */
+  justify-content: flex-end;
   align-items: flex-start;
 }
-
 
 .header img {
   width: 120px;
@@ -68,23 +67,26 @@ router.get('/invoice/:id', async (req, res) => {
   display: block;
 }
 
-/* מובייל */
+
 @media (max-width: 600px) {
   .header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+    flex-direction: row;
+    align-items: flex-start;
     gap: 10px;
   }
-  .header > .info,
-  .header > .logo {
-    width: 100%;
+  .header .info,
+  .header .logo {
+    width: 50%;
+    max-width: 50%;
   }
-    .header img {
-  margin-top: 10px;
+  .header .logo {
+    justify-content: flex-end;
+  }
+  .header .info {
+    text-align: right;
+  }
 }
 
-}
 
       
     .contact-line {

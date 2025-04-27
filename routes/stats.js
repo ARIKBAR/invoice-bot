@@ -339,9 +339,13 @@ const Customer = require('../models/Customer');
 
 router.get('/api/stats', async (req, res) => {
   try {
-    const { customerId, month, year, minAmount, maxAmount } = req.query;
+    const { ownerId, customerId, month, year, minAmount, maxAmount } = req.query;
 
-    let filter = {};
+    if (!ownerId) {
+      return res.status(400).json({ error: 'חובה לציין ownerId' });
+    }
+
+    let filter = { ownerId };
 
     // סינון לפי לקוח
     if (customerId) {
@@ -395,26 +399,28 @@ router.get('/api/stats', async (req, res) => {
 
 router.get('/api/stats/summary', async (req, res) => {
   try {
-    const { year, month } = req.query;
-    if (!year || !month) {
-      return res.status(400).json({ error: 'חובה לציין שנה וחודש' });
+    const { ownerId, year, month } = req.query;
+
+    if (!ownerId || !year || !month) {
+      return res.status(400).json({ error: 'חובה לציין ownerId, שנה וחודש' });
     }
 
     const monthNumber = Number(month);
     const currentMonthStart = new Date(year, monthNumber - 1, 1);
     const currentMonthEnd = new Date(year, monthNumber, 0, 23, 59, 59);
 
-    // חודש קודם
     const prevMonthStart = new Date(year, monthNumber - 2, 1);
     const prevMonthEnd = new Date(year, monthNumber - 1, 0, 23, 59, 59);
 
-    // שליפת חשבוניות חודש נוכחי
+    // שליפת חשבוניות חודש נוכחי לפי בעלים
     const currentMonthInvoices = await Invoice.find({
+      ownerId,
       issueDate: { $gte: currentMonthStart, $lte: currentMonthEnd }
     });
 
-    // שליפת חשבוניות חודש קודם
+    // שליפת חשבוניות חודש קודם לפי בעלים
     const prevMonthInvoices = await Invoice.find({
+      ownerId,
       issueDate: { $gte: prevMonthStart, $lte: prevMonthEnd }
     });
 

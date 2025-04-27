@@ -42,7 +42,8 @@ app.use(require('./routes/view-invoice'));
 app.use(require('./routes/invoice-pdf'));
 app.use(require('./routes/invoiceRoutes'));
 app.use(require('./routes/invoice-image'));
-app.use('/api/reports', require('./routes/reports'));
+app.use(require('./routes/stats.js'));
+
 
 
 
@@ -155,5 +156,5 @@ app.use((req, res) => {
 });
 
 // הגדרת פורט והפעלת השרת
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4999;
 app.listen(PORT, () => console.log(`השרת פועל בפורט ${PORT}`));

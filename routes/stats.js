@@ -336,121 +336,107 @@ const express = require('express');
 const router = express.Router();
 const Invoice = require('../models/Invoice');
 const Customer = require('../models/Customer');
-const BusinessProfile = require('../models/BusinessProfile');
-const renderInvoiceHtml = require('../utils/renderInvoiceHtml');
-const ExcelJS = require('exceljs');
-const fs = require('fs');
-const path = require('path');
 
-// עיבוד תאריך נוח
-function formatDate(date) {
-  return new Date(date).toLocaleDateString('he-IL');
-}
-
-/**
- * @route   GET /api/stats/monthly-report/:ownerId/:month/:year
- * @desc    דוח חודשי כולל תצוגת HTML + יצירת Excel
- */
-router.get('/monthly-report/:ownerId/:month/:year', async (req, res) => {
+router.get('/api/stats', async (req, res) => {
   try {
-    const { ownerId, month, year } = req.params;
-    const from = new Date(`${year}-${month}-01`);
-    const to = new Date(from);
-    to.setMonth(to.getMonth() + 1);
+    const { customerId, month, year, minAmount, maxAmount } = req.query;
 
-    const business = await BusinessProfile.findOne({ ownerId });
-    const invoices = await Invoice.find({
-      ownerId,
-      issueDate: { $gte: from, $lt: to },
-      status: { $in: ['paid', 'sent'] }
-    }).populate('customer');
+    let filter = {};
 
-    // סכום כולל
-    const totalAmount = invoices.reduce((sum, inv) => sum + inv.totalAmount, 0);
+    // סינון לפי לקוח
+    if (customerId) {
+      filter.customer = customerId;
+    }
 
-    // HTML דוח
-    const htmlRows = invoices.map(inv => `
-      <tr>
-        <td>${inv.invoiceNumber}</td>
-        <td>${inv.customer?.name || 'ללא שם'}</td>
-        <td>${formatDate(inv.issueDate)}</td>
-        <td>${inv.totalAmount} ₪</td>
-        <td>${inv.paymentMethod || 'כללי'}</td>
-      </tr>
-    `).join('');
+    // סינון לפי שנה וחודש
+    if (year || month) {
+      filter.issueDate = {};
 
-    const html = `
-    <!DOCTYPE html>
-    <html lang="he" dir="rtl">
-    <head>
-      <meta charset="UTF-8">
-      <title>דוח חודשי ${month}/${year}</title>
-      <style>
-        body { font-family: Arial, sans-serif; padding: 40px; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: right; }
-        th { background-color: #f2f2f2; }
-      </style>
-    </head>
-    <body>
-      <h2>דוח קבלות - ${business.businessName}</h2>
-      <h3>${month}/${year}</h3>
-      <p>סה"כ קבלות: ${invoices.length} | סך כולל: ${totalAmount} ₪</p>
-      <table>
-        <tr>
-          <th>מס'</th>
-          <th>לקוח</th>
-          <th>תאריך</th>
-          <th>סכום</th>
-          <th>אמצעי תשלום</th>
-        </tr>
-        ${htmlRows}
-      </table>
-    </body>
-    </html>
-    `;
+      if (year) {
+        filter.issueDate.$gte = new Date(`${year}-01-01`);
+        filter.issueDate.$lte = new Date(`${year}-12-31`);
+      }
+      if (month) {
+        const monthNumber = month.padStart(2, '0'); // חודש דו ספרתי
+        filter.issueDate.$gte = new Date(`${year}-${monthNumber}-01`);
+        filter.issueDate.$lte = new Date(`${year}-${monthNumber}-31`);
+      }
+    }
 
-    // יצירת קובץ Excel
-    const workbook = new ExcelJS.Workbook();
-    const sheet = workbook.addWorksheet(`Report ${month}-${year}`);
+    // סינון לפי סכום
+    if (minAmount || maxAmount) {
+      filter.totalAmount = {};
+      if (minAmount) filter.totalAmount.$gte = Number(minAmount);
+      if (maxAmount) filter.totalAmount.$lte = Number(maxAmount);
+    }
 
-    sheet.columns = [
-      { header: 'מספר קבלה', key: 'invoiceNumber', width: 15 },
-      { header: 'שם לקוח', key: 'customerName', width: 25 },
-      { header: 'תאריך', key: 'date', width: 15 },
-      { header: 'סכום', key: 'amount', width: 12 },
-      { header: 'אמצעי תשלום', key: 'payment', width: 15 },
-    ];
+    const invoices = await Invoice.find(filter).populate('customer', 'name');
 
-    invoices.forEach(inv => {
-      sheet.addRow({
-        invoiceNumber: inv.invoiceNumber,
-        customerName: inv.customer?.name || 'ללא שם',
-        date: formatDate(inv.issueDate),
-        amount: inv.totalAmount,
-        payment: inv.paymentMethod || 'כללי'
-      });
-    });
+    const totalAmount = invoices.reduce((sum, invoice) => sum + invoice.totalAmount, 0);
 
-    // שמירה זמנית
-    const exportDir = path.join(__dirname, 'public/exports');
-    if (!fs.existsSync(exportDir)) fs.mkdirSync(exportDir, { recursive: true });
-    const filePath = path.join(exportDir, `report-${ownerId}-${month}-${year}.xlsx`);
-    
-    await workbook.xlsx.writeFile(filePath);
+    const result = invoices.map(inv => ({
+      invoiceId: inv._id,
+      customerName: inv.customer?.name || 'לקוח לא ידוע',
+      amount: inv.totalAmount,
+      issueDate: inv.issueDate.toLocaleDateString('he-IL')
+    }));
 
     res.json({
-      success: true,
-      html,
-      excelUrl: `/exports/report-${ownerId}-${month}-${year}.xlsx`,
-      summary: {
-        total: totalAmount,
-        count: invoices.length
-      }
+      count: invoices.length,
+      totalAmount,
+      invoices: result
     });
+
   } catch (err) {
-    console.error('שגיאה ביצירת דוח חודשי:', err);
-    res.status(500).json({ error: 'שגיאה ביצירת דוח חודשי', details: err.message });
+    console.error('שגיאה בשליפת דוחות:', err);
+    res.status(500).json({ error: 'שגיאה בשרת', details: err.message });
+  }
+});
+
+router.get('/api/stats/summary', async (req, res) => {
+  try {
+    const { year, month } = req.query;
+    if (!year || !month) {
+      return res.status(400).json({ error: 'חובה לציין שנה וחודש' });
+    }
+
+    const monthNumber = Number(month);
+    const currentMonthStart = new Date(year, monthNumber - 1, 1);
+    const currentMonthEnd = new Date(year, monthNumber, 0, 23, 59, 59);
+
+    // חודש קודם
+    const prevMonthStart = new Date(year, monthNumber - 2, 1);
+    const prevMonthEnd = new Date(year, monthNumber - 1, 0, 23, 59, 59);
+
+    // שליפת חשבוניות חודש נוכחי
+    const currentMonthInvoices = await Invoice.find({
+      issueDate: { $gte: currentMonthStart, $lte: currentMonthEnd }
+    });
+
+    // שליפת חשבוניות חודש קודם
+    const prevMonthInvoices = await Invoice.find({
+      issueDate: { $gte: prevMonthStart, $lte: prevMonthEnd }
+    });
+
+    const currentTotal = currentMonthInvoices.reduce((sum, inv) => sum + inv.totalAmount, 0);
+    const prevTotal = prevMonthInvoices.reduce((sum, inv) => sum + inv.totalAmount, 0);
+
+    const countCurrent = currentMonthInvoices.length;
+    const countPrev = prevMonthInvoices.length;
+
+    const change = currentTotal - prevTotal;
+    const percentChange = prevTotal === 0 ? 100 : (change / prevTotal) * 100;
+
+    res.json({
+      currentMonth: { total: currentTotal, count: countCurrent },
+      prevMonth: { total: prevTotal, count: countPrev },
+      change,
+      percentChange: percentChange.toFixed(2)
+    });
+
+  } catch (err) {
+    console.error('שגיאה בסיכום:', err);
+    res.status(500).json({ error: 'שגיאה בשרת', details: err.message });
   }
 });
 

@@ -42,6 +42,8 @@ app.use(require('./routes/view-invoice'));
 app.use(require('./routes/invoice-pdf'));
 app.use(require('./routes/invoiceRoutes'));
 app.use(require('./routes/invoice-image'));
+app.use('/api/reports', require('./routes/reports'));
+
 
 
 

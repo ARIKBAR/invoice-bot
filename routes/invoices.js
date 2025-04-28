@@ -579,7 +579,7 @@ router.put('/:id', async (req, res) => {
 const generateQuickInvoiceHTML = require('../utils/generateInvoiceHTML.js'); // ניצור אותו תכף
 
 // routes/invoices.js
-const generateInvoicePdf = require('../utils/generateInvoicePdf');
+// const generateInvoicePdf = require('../utils/generateInvoicePdf');
 
   // router.get('/invoice/:id/pdf-screenshot', async (req, res) => {
   //   try {
